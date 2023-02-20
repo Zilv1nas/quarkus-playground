@@ -1,0 +1,11 @@
+quarkus:
+  datasource:
+    db-kind: postgresql
+  hibernate-orm:
+    database:
+      generation: none
+  flyway:
+    migrate-at-start: true
+  http:
+    access-log:
+      enabled: true
