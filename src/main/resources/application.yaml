@@ -1,6 +1,10 @@
 quarkus:
+  swagger-ui:
+    always-include: true
   datasource:
     db-kind: postgresql
+    jdbc:
+      driver: io.opentelemetry.instrumentation.jdbc.OpenTelemetryDriver
   hibernate-orm:
     database:
       generation: none
@@ -9,3 +13,44 @@ quarkus:
   http:
     access-log:
       enabled: true
+  log:
+    console:
+      format: "%d{HH:mm:ss} %-5p traceId=%X{traceId}, parentId=%X{parentId}, spanId=%X{spanId}, sampled=%X{sampled} [%c{2.}] (%t) %s%e%n"
+  application:
+    name: quarkus-playground
+  opentelemetry:
+    enabled: true
+    tracer:
+      exporter:
+        otlp:
+          endpoint: http://localhost:4317
+
+mp:
+  messaging:
+    incoming:
+      users:
+        value:
+          deserializer: com.github.zilv1nas.config.UserCreatedDeserializer
+        connector: smallrye-kafka
+        topic: users
+        group:
+          id: users-consumer
+    outgoing:
+      users-out:
+        topic: users
+        connector: smallrye-kafka
+
+"%dev":
+  quarkus:
+    log:
+      console:
+        json: false
+"%test":
+  quarkus:
+    log:
+      console:
+        json: false
+"%prod":
+  kafka:
+    bootstrap:
+      servers: kafka:9092
