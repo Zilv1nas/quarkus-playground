@@ -10,5 +10,6 @@ import javax.persistence.Table
 data class User(
     @Id
     val id: UUID,
+    val name: String,
     val email: String,
 )

@@ -17,6 +17,7 @@ val quarkusPlatformArtifactId: String by project
 val quarkusPlatformVersion: String by project
 
 dependencies {
+    implementation("io.quarkus:quarkus-elasticsearch-rest-high-level-client")
     implementation(enforcedPlatform("${quarkusPlatformGroupId}:${quarkusPlatformArtifactId}:${quarkusPlatformVersion}"))
     annotationProcessor("io.quarkus:quarkus-panache-common")
     implementation("io.quarkus:quarkus-opentelemetry")

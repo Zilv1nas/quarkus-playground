@@ -35,6 +35,13 @@ mp:
         topic: users
         group:
           id: users-consumer
+      users-search:
+        value:
+          deserializer: com.github.zilv1nas.config.UserCreatedDeserializer
+        connector: smallrye-kafka
+        topic: users
+        group:
+          id: users-search-consumer
     outgoing:
       users-out:
         topic: users

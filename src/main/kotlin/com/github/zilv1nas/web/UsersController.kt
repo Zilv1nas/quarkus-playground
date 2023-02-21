@@ -1,6 +1,7 @@
 package com.github.zilv1nas.web
 
 import com.github.zilv1nas.repository.UsersRepository
+import com.github.zilv1nas.repository.UsersSearchRepository
 import com.github.zilv1nas.repository.model.User
 import com.github.zilv1nas.service.UserEventsProducer
 import com.github.zilv1nas.web.model.UserRequest
@@ -16,11 +17,13 @@ import javax.ws.rs.GET
 import javax.ws.rs.POST
 import javax.ws.rs.Path
 import javax.ws.rs.Produces
+import javax.ws.rs.QueryParam
 import javax.ws.rs.core.MediaType
 
 @Path("/v1/users")
 class UsersController(
     private val usersRepository: UsersRepository,
+    private val usersSearchRepository: UsersSearchRepository,
     private val userEventsProducer: UserEventsProducer,
 ) {
     private val logger: Logger = Logger.getLogger(UsersController::class.java)
@@ -36,6 +39,19 @@ class UsersController(
     fun getUsers(): UsersResponse = usersRepository
         .findAll()
         .list<User>()
+        .let { UsersResponse.from(it) }
+
+    @GET
+    @Path("/search")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Counted(name = "usersSearchCount", description = "How many times users were searched")
+    @Timed(
+        name = "usersSearchTimer",
+        description = "A measure of how long it takes to search for users",
+        unit = MetricUnits.MILLISECONDS
+    )
+    fun searchUsers(@QueryParam("query") query: String): UsersResponse = usersSearchRepository
+        .search(query)
         .let { UsersResponse.from(it) }
 
     @POST
