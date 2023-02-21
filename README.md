@@ -2,11 +2,36 @@
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+It provides a CRUD for Users API and it supports these features:
+- JSON logging (for prod profile)
+- Distributed tracing
+- Application configuration
+- Prometheus metrics
+- CQRS using Kafka as event bus
+- Full text search with ElasticSearch
+- PostgreSQL for users storage
+- Redis for users cache
+- Open API exposed via swagger ui
+
+Accessible endpoints:
+- Dev console: http://localhost:8080/q/dev/
+- Swagger UI: http://localhost:8080/q/swagger-ui/
+- Prometheus metrics: http://localhost:8080/q/metrics
+- Health endpoint: http://localhost:8080/q/health
+- Readiness endpoint: http://localhost:8080//q/health/ready
+- Readiness endpoint: http://localhost:8080//q/health/live
+- Jaeger UI (tracing): http://localhost:16686/search (docker compose must be started to access tracing info)
+
+If you want to learn more about Quarkus, please visit its website: https://quarkus.io/.
 
 ## Running the application in dev mode
+First, start docker compose:
+```shell script
+docker-compose up -d
+```
+It will boot up Jaeger tracing tool.
 
-You can run your application in dev mode that enables live coding using:
+Then, You can run your application in dev mode that enables live coding using:
 ```shell script
 ./gradlew quarkusDev
 ```
