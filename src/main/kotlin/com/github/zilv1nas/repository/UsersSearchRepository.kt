@@ -3,6 +3,7 @@ package com.github.zilv1nas.repository
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.github.zilv1nas.repository.model.User
+import io.opentelemetry.instrumentation.annotations.WithSpan
 import org.elasticsearch.action.index.IndexRequest
 import org.elasticsearch.action.search.SearchRequest
 import org.elasticsearch.action.support.IndicesOptions
@@ -14,12 +15,12 @@ import org.elasticsearch.index.query.QueryBuilders
 import org.elasticsearch.search.builder.SearchSourceBuilder
 import javax.enterprise.context.ApplicationScoped
 
-
 @ApplicationScoped
 class UsersSearchRepository(
     private val elasticSearch: RestHighLevelClient,
     private val objectMapper: ObjectMapper,
 ) {
+    @WithSpan
     fun index(user: User) {
         val request = IndexRequest("users").apply {
             id(user.id.toString())
@@ -28,6 +29,7 @@ class UsersSearchRepository(
         elasticSearch.index(request, RequestOptions.DEFAULT)
     }
 
+    @WithSpan
     fun search(query: String): List<User> {
         val searchSourceBuilder = SearchSourceBuilder()
             .query(QueryBuilders.multiMatchQuery(query, "name", "email").fuzziness(Fuzziness.AUTO))

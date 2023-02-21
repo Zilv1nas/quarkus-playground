@@ -1,8 +1,8 @@
 package com.github.zilv1nas.web
 
+import com.github.zilv1nas.repository.UsersCache
 import com.github.zilv1nas.repository.UsersRepository
 import com.github.zilv1nas.repository.UsersSearchRepository
-import com.github.zilv1nas.repository.model.User
 import com.github.zilv1nas.service.UserEventsProducer
 import com.github.zilv1nas.web.model.UserRequest
 import com.github.zilv1nas.web.model.UsersResponse
@@ -23,6 +23,7 @@ import javax.ws.rs.core.MediaType
 @Path("/v1/users")
 class UsersController(
     private val usersRepository: UsersRepository,
+    private val usersCache: UsersCache,
     private val usersSearchRepository: UsersSearchRepository,
     private val userEventsProducer: UserEventsProducer,
 ) {
@@ -36,10 +37,9 @@ class UsersController(
         description = "A measure of how long it takes to fetch users list",
         unit = MetricUnits.MILLISECONDS
     )
-    fun getUsers(): UsersResponse = usersRepository
-        .findAll()
-        .list<User>()
-        .let { UsersResponse.from(it) }
+    fun getUsers(): UsersResponse = usersCache.getOrCompute {
+        usersRepository.findAll().list()
+    }.let { UsersResponse.from(it) }
 
     @GET
     @Path("/search")
